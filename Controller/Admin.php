@@ -13,11 +13,11 @@ class Admin extends Blog
       if (!$this->isLogged())
       header('Location: blog_index.html');
 
-      $this->oUtil->oAnimals = $this->oModel->getAll();
+      $this->oUtil->oPosts = $this->oModel->getAll();
       $this->oUtil->getView('edit');
     }
 
-    // Affiche la page d'edition d'article
+    // Affiche la page d'edition du dossier
     // Suite à l'envoie du formulaire, on récupère les données saisies pour puis on update les données du post.
     // Si on modifie l'image associée, on vérifie que l'extension existe (jpg, png ...)
     public function editPost()
@@ -27,7 +27,7 @@ class Admin extends Blog
 
       if (isset($_POST['edit_submit']))
       {
-        if (empty($_POST['nom']) || empty($_POST['photo']))
+        if (empty($_POST['title']) || empty($_POST['body']))
         {
           $this->oUtil->sErrMsg = 'Tous les champs doivent être remplis.';
         }
@@ -36,28 +36,28 @@ class Admin extends Blog
           $this->oUtil->getModel('Admin');
           $this->oModel = new \BlogPhp\Model\Admin;
 
-          $aData = array('animal_id' => $_GET['id'], 'nom' => $_POST['nom'], 'photo' => $_POST['photo'], 'type' => $_POST['type'], 'dateNaissance' => $_POST['dateNaissance'], 'breed' => $_POST['breed']);
+          $aData = array('post_id' => $_GET['id'], 'title' => $_POST['title'], 'body' => $_POST['body']);
           $this->oModel->update($aData);
 
-          if (!empty($_FILES['photo']['nom']))
+          if (!empty($_FILES['image']['name']))
           {
-            $file = $_FILES['photo']['nom'];
+            $file = $_FILES['image']['name'];
             $extensions = ['.png','.jpg','.jpeg','.gif','.PNG','.JPG','.JPEG','.GIF'];
             $extension = strrchr($file, '.');
             $id = $_GET['id'];
             if(!in_array($extension,$extensions)){
               $this->oUtil->sErrMsg = "Cette image n'est pas valable";
             }
-            $this->oModel->updateImg($_FILES['photo']['nom'], $_GET['id'], $_FILES['photo']['tmp_name']);
+            $this->oModel->updateImg($_FILES['image']['name'], $_GET['id'], $_FILES['image']['tmp_name']);
           }
 
-          $this->oUtil->sSuccMsg = 'L\'dossier a bien été mis à jour !';
+          $this->oUtil->sSuccMsg = 'Le dossier a bien été mis à jour !';
 
         }
       }
 
       /* Récupère les données du post */
-      $this->oUtil->oAnimal = $this->oModel->getById($_GET['id']);
+      $this->oUtil->oPost = $this->oModel->getById($_GET['id']);
 
       $this->oUtil->getView('edit_post');
     }
@@ -72,30 +72,30 @@ class Admin extends Blog
 
       if (isset($_POST['add_submit']))
       {
-          if (empty($_POST['nom']) || empty($_POST['type']))
+          if (empty($_POST['nom']))
           {
-            $this->oUtil->sErrMsg = 'Tous les champs doivent être remplis.';
+            $this->oUtil->sErrMsg = 'Tous les champs doivent être remplis 2.';
           }
           else
           {
             $this->oUtil->getModel('Admin');
             $this->oModel = new \BlogPhp\Model\Admin;
 
-            $aData = array('nom' => $_POST['nom'], 'photo', 'type', 'dateNaissance', 'breed' => $_POST['type']);
+            $aData = array('nom' => $_POST['nom']);
             $this->oModel->add($aData);
 
-            if (!empty($_FILES['photo']['nom']))
+            if (!empty($_FILES['photo']['name']))
             {
-              $file = $_FILES['photo']['nom'];
+              $file = $_FILES['photo']['name'];
               $extensions = ['.png','.jpg','.jpeg','.gif','.PNG','.JPG','.JPEG','.GIF'];
               $extension = strrchr($file, '.');
               if(!in_array($extension,$extensions)){
-        				  $this->oUtil->sErrMsg = "Cette image n'est pas valable";
+        				  $this->oUtil->sErrMsg = "Cette photo n'est pas valable";
         			}
               $this->oModel->postImg($_FILES['photo']['tmp_name'], $extension);
             }
 
-            $this->oUtil->sSuccMsg = 'L\'article a bien été ajouté !';
+            $this->oUtil->sSuccMsg = 'Le dossier a bien été ajouté !';
           }
       }
 
@@ -118,16 +118,15 @@ class Admin extends Blog
       	'Commentaires' 	  	     => 'Comments',
       	'Utilisateurs' 	         => 'Users',
         'Signalements'           => 'Votes',
-        'Animaux'                => 'Animal',
-        'Types'                  => 'Animal'
+        'Animaux'                => 'Animal'
       ];
 
       $colors = [
-      	'Posts'				           => 'deep-purple',
-      	'Comments' 		  	       => 'pink lighten-2',
-      	'Users' 			           => 'light-green',
+      	'Posts'				           => 'green',
+      	'Comments' 		  	       => 'brown',
+      	'Users' 			           => 'blue',
         'Votes'                  => 'red',
-        'Animal'                 => 'teal',
+        'Animal'                 => 'teal'
       ];
 
       $this->oUtil->aColors = array();
@@ -209,7 +208,7 @@ class Admin extends Blog
       if (!$this->isLogged())
       header('Location: blog_index.html');
 
-      $oAnimal = $this->oUtil->oAnimal = $this->oModel->getById($_GET['animalId']); // Récupère les données du post
+      $oPost = $this->oUtil->oPost = $this->oModel->getById($_GET['postid']); // Récupère les données du post
       $this->oUtil->getModel('Admin');
       $this->oModel = new \BlogPhp\Model\Admin;
 
@@ -217,7 +216,7 @@ class Admin extends Blog
       $this->oModel->deleteComment($iId); // supprime le commentaire
       $this->oModel->deleteVote($iId); // supprime les signalements du commentaire
 
-      header("Location: blog_post_$oAnimal->id.html");
+      header("Location: blog_post_$oPost->id.html");
     }
 
     // On obtient la couleur associé à chaque table

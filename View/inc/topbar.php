@@ -22,7 +22,7 @@
 					<?php endif ?>
 
 					<?php if (!empty($_SESSION['is_admin'])): ?>
-					<li class="<?php echo ($_GET['a']=="edit")?"active" : ""; ?>"><a href="<?=ROOT_URL?>admin_edit.html"><i class="material-icons">edit</i></a></li>
+					<li class="<?php echo ($_GET['a']=="edit")?"active" : ""; ?>"><a href="<?=ROOT_URL?>admin_add.html"><i class="material-icons">edit</i></a></li>
 					<?php endif ?>
 
 					<?php if (!empty($_SESSION['is_admin']) || !empty($_SESSION['is_user'])): ?>

@@ -2,9 +2,9 @@
 <?php require 'inc/topbar.php' ?>
 
 <div class="container">
-  <?php if (empty($this->oAnimals)): ?>
-    <h1>Il n'y a aucun dossier.</h1>
-    <p><button type="button" onclick="window.location='<?=ROOT_URL?>admin_add.html'" class="btn waves-effect waves-light">Ajoutez votre premier dossier !</button></p>
+  <?php if (empty($this->oAnimals)): ?></br></br>
+    <!--<h1>Il n'y a aucun dossier.</h1>-->
+    <p><button type="button" onclick="window.location='<?=ROOT_URL?>admin_add.html'" class="btn waves-effect waves-light">Ajoutez un dossier !</button></p>
   <?php else: ?>
   <h1>Edition</h1>
   <a href="<?=ROOT_URL?>admin_add.html"><button class="btn light-blue waves-effect waves-light">Ajouter un dossier </button></a>
